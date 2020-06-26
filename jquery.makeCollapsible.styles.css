@@ -1,0 +1,105 @@
+/**
+ * These rules prevent re-flows relating to collapsible on-wiki elements (T42812).
+ * This is done by temporarily creating a pseudo element in the place that JavaScript will insert
+ * a toggle control. The same CSS rules that control the positioning of the toggle control will apply
+ * to the pseudo element. When the JavaScript has executed
+ * (See corresponding non-render blocking CSS in jquery.makeCollapsible)
+ * all pseudo elements will be removed.
+ *
+ * Currently we support all the examples on [[mw:Manual:Collapsible_elements/Demo/Simple]]
+ * All examples on [[mw:Manual:Collapsible_elements/Demo/Advanced]] are supported with the following
+ * exceptions
+ * - Custom collapsible 4 (table-row)
+ * -- CSS selector would be too complicated
+ * - Collapsible div nested in collapsed div
+ * -- Given it's not easy to identify the collapsed content via CSS, text will be shown until
+ *    JavaScript has loaded
+ * - "Combination example"
+ * -- At a later time, we may want to support the use of of `attr`, but given the code
+ *    complexity we will not for the time being (see https://davidwalsh.name/css-content-attr)
+ */
+ol.mw-collapsible:before,
+ul.mw-collapsible:before,
+.mw-collapsible-toggle-li {
+  /*
+   * Rather than inherit any margins from the general li selector - make sure this is explicit
+   * to avoid reflows
+   */
+  display: list-item;
+  list-style: none;
+  margin-bottom: 0.1em;
+}
+ol.mw-made-collapsible:before,
+ul.mw-made-collapsible:before {
+  display: none;
+}
+ol.mw-collapsible:not( .mw-made-collapsible):before,
+ul.mw-collapsible:not( .mw-made-collapsible):before,
+table.mw-collapsible:not( .mw-made-collapsible) :first-child tr:first-child th:last-child:before,
+table.mw-collapsible:not( .mw-made-collapsible) > caption:first-child:after,
+div.mw-collapsible:not( .mw-made-collapsible):before {
+  content: '[合併]';
+}
+td.mw-collapsed:not( .mw-made-collapsible):before,
+table.mw-collapsed:not( .mw-made-collapsible) :first-child tr:first-child th:last-child:before,
+table.mw-collapsed:not( .mw-made-collapsible) > caption:first-child:after,
+div.mw-collapsed:not( .mw-made-collapsible):before {
+  content: '[展開]';
+}
+.mw-collapsible[id^='mw-customcollapsible'] th:before,
+.mw-collapsible[id^='mw-customcollapsible']:before {
+  content: none !important;
+}
+table.mw-collapsible:not( .mw-made-collapsible) > caption:first-child:after {
+  float: none;
+  display: block;
+}
+.mw-collapsed:not( .mw-made-collapsible) > p,
+.mw-collapsed:not( .mw-made-collapsible) > table,
+.mw-collapsed:not( .mw-made-collapsible) > thead + tbody,
+.mw-collapsed:not( .mw-made-collapsible) tr:not( :first-child ),
+.mw-collapsed:not( .mw-made-collapsible) .mw-collapsible-content {
+  display: none;
+}
+
+/* Collapsible elements in the UI (outside of the content area) are not in either .mw-content-ltr or
+ * .mw-content-rtl. Align them based on the user language. */
+.mw-collapsible:not( .mw-made-collapsible) th:before,
+.mw-collapsible:not( .mw-made-collapsible):before,
+.mw-collapsible-toggle {
+  float: right;
+}
+
+/* For collapsible elements in the content area, override the alginment based on the content language. */
+/* @noflip */
+.mw-content-ltr .mw-collapsible:not( .mw-made-collapsible) th:before,
+.mw-content-rtl .mw-content-ltr .mw-collapsible:not( .mw-made-collapsible) th:before,
+.mw-content-ltr .mw-collapsible:not( .mw-made-collapsible):before,
+.mw-content-rtl .mw-content-ltr .mw-collapsible:not( .mw-made-collapsible):before,
+.mw-content-ltr .mw-collapsible-toggle,
+.mw-content-rtl .mw-content-ltr .mw-collapsible-toggle {
+  float: right;
+}
+
+/* @noflip */
+.mw-content-rtl .mw-collapsible:not( .mw-made-collapsible) th:before,
+.mw-content-ltr .mw-content-rtl .mw-collapsible:not( .mw-made-collapsible) th:before,
+.mw-content-rtl .mw-collapsible:not( .mw-made-collapsible):before,
+.mw-content-ltr .mw-content-rtl .mw-collapsible:not( .mw-made-collapsible):before,
+.mw-content-rtl .mw-collapsible-toggle,
+.mw-content-ltr .mw-content-rtl .mw-collapsible-toggle {
+  float: left;
+}
+
+/* list-items go as wide as their parent element, don't float them inside list items */
+li .mw-collapsible-toggle,
+.mw-content-ltr li .mw-collapsible-toggle,
+.mw-content-rtl li .mw-collapsible-toggle,
+.mw-content-ltr .mw-content-rtl li .mw-collapsible-toggle,
+.mw-content-rtl .mw-content-ltr li .mw-collapsible-toggle {
+  float: none;
+}
+ol.mw-collapsible:not( .mw-made-collapsible):before,
+ul.mw-collapsible:not( .mw-made-collapsible):before {
+  float: none !important;
+}
