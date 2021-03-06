@@ -1,2 +1,2 @@
 # jQuery-makeCollapsible
-Copied from MediWiki.
+Copied from MediaWiki.
